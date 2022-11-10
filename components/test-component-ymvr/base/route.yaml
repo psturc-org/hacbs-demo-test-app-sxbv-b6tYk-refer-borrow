@@ -1,0 +1,23 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  creationTimestamp: null
+  labels:
+    app.kubernetes.io/created-by: application-service
+    app.kubernetes.io/instance: test-component-ymvr
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: test-component-ymvr
+    app.kubernetes.io/part-of: hacbs-demo-test-app-sxbv
+  name: test-component-ymvr
+  namespace: hacbs-e2e-hwua
+spec:
+  port:
+    targetPort: 8081
+  tls:
+    insecureEdgeTerminationPolicy: Redirect
+    termination: edge
+  to:
+    kind: Service
+    name: test-component-ymvr
+    weight: 100
+status: {}

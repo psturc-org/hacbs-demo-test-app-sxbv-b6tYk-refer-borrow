@@ -1,0 +1,63 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  creationTimestamp: null
+  name: test-component-ymvr
+  namespace: hacbs-e2e-hwua
+spec:
+  params:
+  - name: git-revision
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      annotations:
+        appstudio.openshift.io/application: hacbs-demo-test-app-sxbv
+        appstudio.openshift.io/component: test-component-ymvr
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      creationTimestamp: null
+      generateName: test-component-ymvr-
+      labels:
+        appstudio.openshift.io/application: hacbs-demo-test-app-sxbv
+        appstudio.openshift.io/component: test-component-ymvr
+        build.appstudio.openshift.io/build: "true"
+        build.appstudio.openshift.io/type: build
+        build.appstudio.openshift.io/version: "0.1"
+        pipelines.appstudio.openshift.io/type: build
+      namespace: hacbs-e2e-hwua
+    spec:
+      params:
+      - name: git-url
+        value: https://github.com/psturc-org/devfile-sample-hello-world
+      - name: output-image
+        value: quay.io/psturc/test-images:3cde8d722c4a460580c3fb1026271c65-$(tt.params.git-revision)
+      - name: dockerfile
+        value: docker/Dockerfile
+      - name: path-context
+        value: .
+      pipelineRef:
+        bundle: quay.io/redhat-appstudio-tekton-catalog/pipeline-docker-build:9212817dcd58ed82930ffb0156706377d8422286
+        name: docker-build
+      podTemplate:
+        imagePullSecrets:
+        - name: redhat-appstudio-registry-pull-secret
+      workspaces:
+      - name: workspace
+        volumeClaimTemplate:
+          metadata:
+            creationTimestamp: null
+          spec:
+            accessModes:
+            - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1Gi
+          status: {}
+      - name: registry-auth
+        secret:
+          secretName: redhat-appstudio-registry-pull-secret
+    status: {}
+status: {}
